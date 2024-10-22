@@ -18,6 +18,9 @@ jobs:
       uses: actions/checkout@v2
 
     - name: Setup SSH
+      env:
+          DROPLET_PRIVATE_KEY: ${{ secrets.DROPLET_PRIVATE_KEY }}
+          DROPLET_PUBLIC_IP: ${{ secrets.DROPLET_PUBLIC_IP }}
       run: |
         sudo apt-get update
         sudo apt-get install -y openssh-client bash
@@ -34,7 +37,7 @@ jobs:
       env:
         DROPLET_USER: ${{ secrets.DROPLET_USER }}
         DROPLET_PUBLIC_IP: ${{ secrets.DROPLET_PUBLIC_IP }}
-        DROPET_PRIVATE_KEY: ${{ secrets.DROPLET_PRIVATE_KEY }}
+        DROPLET_PRIVATE_KEY: ${{ secrets.DROPLET_PRIVATE_KEY }}
       run: |
         echo "SSH to server..."
         ssh $DROPLET_USER@$DROPLET_PUBLIC_IP "cd basic-arithmetic/ && git pull && docker compose up --build -d"
