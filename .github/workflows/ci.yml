@@ -23,7 +23,9 @@ jobs:
         sudo apt-get install -y openssh-client bash
         mkdir -p ~/.ssh
         eval $(ssh-agent -s)
-        echo "$DROPLET_PRIVATE_KEY" | tr -d '\r' | ssh-add - > /dev/null
+        echo "$DROPLET_PRIVATE_KEY" > ~/.ssh/id_rsa
+        chmod 600 ~/.ssh/id_rsa
+        ssh-add ~/.ssh/id_rsa
         touch ~/.ssh/config
         echo -e "Host *\n\tStrictHostKeyChecking no\n\n" > ~/.ssh/config
         ssh-keyscan -H $DROPLET_PUBLIC_IP >> ~/.ssh/known_hosts
