@@ -21,8 +21,8 @@ jobs:
           DROPLET_PRIVATE_KEY: ${{ secrets.DROPLET_PRIVATE_KEY }}
           DROPLET_PUBLIC_IP: ${{ secrets.DROPLET_PUBLIC_IP }}
       run: |
-        sudo apt-get update
-        sudo apt-get install -y openssh-client bash
+        apt-get update
+        apt-get install -y openssh-client bash
         mkdir -p ~/.ssh
         eval $(ssh-agent -s)
         echo "$DROPLET_PRIVATE_KEY" > ~/.ssh/id_rsa
