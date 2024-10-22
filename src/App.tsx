@@ -1,6 +1,9 @@
-export default function App() {
+import { Calculator } from "./app/Calculator";
 
+export default function App() {
   return (
-    <main>Hello world</main>
-  )
+    <main className="h-dvh content-center bg-background">
+      <Calculator />
+    </main>
+  );
 }
