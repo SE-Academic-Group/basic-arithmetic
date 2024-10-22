@@ -19,7 +19,8 @@ jobs:
 
     - name: Setup SSH
       run: |
-        apk update && apk add openssh-client bash
+        sudo apt-get update
+        sudo apt-get install -y openssh-client bash
         mkdir -p ~/.ssh
         eval $(ssh-agent -s)
         echo "$DROPLET_PRIVATE_KEY" | tr -d '\r' | ssh-add - > /dev/null
