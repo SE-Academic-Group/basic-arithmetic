@@ -32,6 +32,7 @@ jobs:
       env:
         DROPLET_USER: ${{ secrets.DROPLET_USER }}
         DROPLET_PUBLIC_IP: ${{ secrets.DROPLET_PUBLIC_IP }}
+        DROPET_PRIVATE_KEY: ${{ secrets.DROPLET_PRIVATE_KEY }}
       run: |
         echo "SSH to server..."
         ssh $DROPLET_USER@$DROPLET_PUBLIC_IP "cd basic-arithmetic/ && git pull && docker compose up --build -d"
