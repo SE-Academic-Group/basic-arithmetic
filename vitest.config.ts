@@ -6,7 +6,9 @@ export default defineConfig({
     globals: true,
     coverage: {
       include: ["src"],
-      exclude: ["src/{main,App}.tsx"],
+      exclude: ["src/{main,App}.tsx", "src/**/*.d.ts"],
     },
+    environment: "happy-dom",
+    setupFiles: ["./vitest.setup.ts"],
   },
 });
