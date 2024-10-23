@@ -1,4 +1,3 @@
-import { describe, expect, it } from "vitest";
 import { equals } from "./equals";
 
 describe("equals", () => {
@@ -11,7 +10,7 @@ describe("equals", () => {
   });
 
   it('should return "Error" when the result is not a number', () => {
-    expect(equals("hello")).toBe("Error");
+    expect(equals("'hello'")).toBe("Error");
   });
 
   it('should return "Error" for invalid input', () => {

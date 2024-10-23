@@ -9,6 +9,8 @@ export function equals(input: string) {
 
       return result.toFixed(2).toString();
     }
+
+    return "Error";
   } catch (err) {
     console.error(err);
     return "Error";
