@@ -38,6 +38,6 @@ jobs:
         DROPLET_PRIVATE_KEY: ${{ secrets.DROPLET_PRIVATE_KEY }}
       run: |
         echo "SSH to server..."
-        ssh $DROPLET_USER@$DROPLET_PUBLIC_IP "cd basic-arithmetic/ && git pull && docker compose up --build -d"
+        ssh $DROPLET_USER@$DROPLET_PUBLIC_IP "cd basic-arithmetic/ && git fetch origin && git reset --hard origin/main && docker compose up --build -d"
         echo "Server deployed successfully!"
         ssh $DROPLET_USER@$DROPLET_PUBLIC_IP "nohup docker system prune -f > /dev/null 2>&1 &"
