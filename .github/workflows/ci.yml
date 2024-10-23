@@ -1,0 +1,43 @@
+name: Deploy Server
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  deploy_job:
+    runs-on: [self-hosted, Linux, X64]
+
+    steps:
+    - name: Checkout Repository
+      uses: actions/checkout@v2
+
+    - name: Setup SSH
+      env:
+          DROPLET_PRIVATE_KEY: ${{ secrets.DROPLET_PRIVATE_KEY }}
+          DROPLET_PUBLIC_IP: ${{ secrets.DROPLET_PUBLIC_IP }}
+      run: |
+        apk update && apk add openssh-client bash
+        mkdir -p ~/.ssh
+        eval $(ssh-agent -s)
+        echo "$DROPLET_PRIVATE_KEY" > ~/.ssh/id_rsa
+        chmod 600 ~/.ssh/id_rsa
+        ssh-add ~/.ssh/id_rsa
+        touch ~/.ssh/config
+        echo -e "Host *\n\tStrictHostKeyChecking no\n\n" > ~/.ssh/config
+        ssh-keyscan -H $DROPLET_PUBLIC_IP >> ~/.ssh/known_hosts
+
+    - name: Deploy to Server
+      env:
+        DROPLET_USER: ${{ secrets.DROPLET_USER }}
+        DROPLET_PUBLIC_IP: ${{ secrets.DROPLET_PUBLIC_IP }}
+        DROPLET_PRIVATE_KEY: ${{ secrets.DROPLET_PRIVATE_KEY }}
+      run: |
+        echo "SSH to server..."
+        ssh $DROPLET_USER@$DROPLET_PUBLIC_IP "cd basic-arithmetic/ && git pull && docker compose up --build -d"
+        echo "Server deployed successfully!"
+        ssh $DROPLET_USER@$DROPLET_PUBLIC_IP "nohup docker system prune -f > /dev/null 2>&1 &"
