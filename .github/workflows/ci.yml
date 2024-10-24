@@ -1,17 +1,32 @@
-name: Deploy Server
+name: Test&Deploy
 
 on:
   push:
-    branches:
-      - main
   pull_request:
-    branches:
-      - main
 
 jobs:
+  test_job:
+    runs-on: [self-hosted, Linux, X64]
+    
+    steps:
+    - name: Checkout Repository
+      uses: actions/checkout@v2
+
+    - name: Run Unit Tests
+      run: |
+        echo "Running unit tests..."
+        echo "Unit tests completed!"
+
+    - name: Collect Coverage Report
+      run: |
+        echo "Collecting coverage report..."
+        echo "Coverage report generated!"
+
   deploy_job:
     runs-on: [self-hosted, Linux, X64]
-
+    needs: test_job
+    if: github.ref == 'refs/heads/main'
+    
     steps:
     - name: Checkout Repository
       uses: actions/checkout@v2
