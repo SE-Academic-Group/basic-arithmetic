@@ -2,7 +2,7 @@ services:
  app:
    build:
      context: ./
-     dockerfile: Dockerfile
+     dockerfile: Dockerfile.dev
    container_name: app
    restart: always
    ports:
@@ -10,8 +10,6 @@ services:
    volumes:
      - .:/app
      - /app/node_modules
-   environment:
-     VITE_APP_TITLE: Basic Calculator
    networks:
      - network
 networks:
