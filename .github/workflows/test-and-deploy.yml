@@ -1,0 +1,60 @@
+name: Test&Deploy
+run-name: Test & Deploy
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  test_job:
+    runs-on: [self-hosted, Linux, X64]
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v2
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: Run Unit Tests
+        run: npm run test
+
+      - name: Collect Coverage Report
+        run: npm run coverage
+
+  deploy_job:
+    runs-on: [self-hosted, Linux, X64]
+    needs: test_job
+    if: github.ref == 'refs/heads/main'
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v2
+
+      - name: Setup SSH
+        env:
+          DROPLET_PRIVATE_KEY: ${{ secrets.DROPLET_PRIVATE_KEY }}
+          DROPLET_PUBLIC_IP: ${{ secrets.DROPLET_PUBLIC_IP }}
+        run: |
+          apk update && apk add openssh-client bash
+          mkdir -p ~/.ssh
+          eval $(ssh-agent -s)
+          echo "$DROPLET_PRIVATE_KEY" > ~/.ssh/id_rsa
+          chmod 600 ~/.ssh/id_rsa
+          ssh-add ~/.ssh/id_rsa
+          touch ~/.ssh/config
+          echo -e "Host *\n\tStrictHostKeyChecking no\n\n" > ~/.ssh/config
+          ssh-keyscan -H $DROPLET_PUBLIC_IP >> ~/.ssh/known_hosts
+
+      - name: Deploy to Server
+        env:
+          DROPLET_USER: ${{ secrets.DROPLET_USER }}
+          DROPLET_PUBLIC_IP: ${{ secrets.DROPLET_PUBLIC_IP }}
+          DROPLET_PRIVATE_KEY: ${{ secrets.DROPLET_PRIVATE_KEY }}
+        run: |
+          echo "SSH to server..."
+          ssh $DROPLET_USER@$DROPLET_PUBLIC_IP "cd basic-arithmetic/ && git fetch origin && git reset --hard origin/main && docker compose up --build -d"
+          echo "Server deployed successfully!"
+          ssh $DROPLET_USER@$DROPLET_PUBLIC_IP "nohup docker system prune -f > /dev/null 2>&1 &"
