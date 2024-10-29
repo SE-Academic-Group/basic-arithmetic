@@ -1,13 +1,15 @@
 services:
- frontend-prod:
-   build:
-     context: .
-     dockerfile: Dockerfile.prod
-   container_name: frontend-prod
-   restart: always
-   ports:
-     - 3000:3000
-   networks:
-     - network
+  frontend-prod:
+    build:
+      context: .
+      dockerfile: Dockerfile.prod
+    container_name: frontend-prod
+    restart: always
+    ports:
+      - "3000:3000"
+    environment:
+      - NODE_ENV=production
+    networks:
+      - network
 networks:
- network:
+  network: null

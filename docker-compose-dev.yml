@@ -1,16 +1,16 @@
 services:
- app:
-   build:
-     context: ./
-     dockerfile: Dockerfile.dev
-   container_name: app
-   restart: always
-   ports:
-     - 3000:3000
-   volumes:
-     - .:/app
-     - /app/node_modules
-   networks:
-     - network
+  app:
+    build:
+      context: ./
+      dockerfile: Dockerfile.dev
+    container_name: app
+    restart: always
+    ports:
+      - "3000:3000"
+    volumes:
+      - ".:/app"
+      - /app/node_modules
+    networks:
+      - network
 networks:
- network:
+  network: null
