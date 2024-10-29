@@ -11,8 +11,8 @@ export function equals(input: string) {
     }
 
     return "Error";
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
   } catch (err) {
-    console.error(err);
     return "Error";
   }
 }
